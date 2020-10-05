@@ -1,0 +1,258 @@
+
+
+
+
+<!doctype html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<title></title>
+
+<body>
+    <div id="app">
+
+        <table border=1>
+            <tr>
+                <td><input type="checkbox" name="checkbox" id="checkbox" v-model="selectAll" @click="checkAll" ></td>
+                <td>id</td>
+                <td>title</td>
+                <td>author</td>
+                <td>category</td>
+                <td>price</td>
+                <td>created</td>
+                <td>수정</td>
+                <td>삭제</td>
+            </tr>
+            <span>체크한 아이디: {{ userIds }}</span>
+            <tr v-for="ab in datas" v-bind:key="ab.id" @click="getDataone(ab.id)">
+               
+                <td onclick="event.cancelBubble=true"><input type="checkbox" name="checkbox" v-model="userIds" :value="ab.id" > </td>
+                
+                <td>{{ab.id}}</td>
+                <td>{{ab.title}}</td>
+                <td>{{ab.author}}</td>
+                <td>{{ab.category}}</td>
+                <td>{{ab.price}}</td>
+                <td>{{ab.created}}</td>
+                <td onclick="event.cancelBubble=true"><button @click="insert(ab.id)">update</button></td>
+                <td onclick="event.cancelBubble=true"><button @click="dele(ab.id)">delete</button></td>
+                
+
+            </tr>
+                
+            
+
+    </div>
+    </table>
+    <div>
+
+        <button @click="getData">정보 생성</button>
+        <button @click="getDataone">한개셀렉</button>
+        <button @click="add">입력</button>
+        <button @click="update">수정</button>
+        <button @click="selectdel">선택 삭제</button>
+
+    </div>
+    </div>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+
+    
+    <script>
+        var getValue = localStorage.getItem('token');
+            console.log(getValue); 
+
+            if(!getValue){
+                 window.location.href = 'http://localhost:10081/';
+            }
+
+
+        var vm = new Vue({
+            el: '#app',
+            data: {
+
+                datas: [{}],
+                token : getValue,
+                message: 'Vue',
+                ab : false,
+                userIds: [],                
+                selectAll: false
+            },
+            methods: {
+                
+
+
+
+            getData: function () {
+                    window.location.href = 'http://localhost:10081/create.html'
+                },
+
+                getDataone: function (id) {
+                    axios.get('http://localhost:10081/api/books/'+id)
+                        .then(function (response) {
+                            console.log(response.data);
+                            window.location.href = 'http://localhost:10081/read.html?id='+ id;
+                        })
+                },
+                add: function () {
+                    axios.post('http://localhost:10081/api/books/add', {
+
+                        title: '1224qweqweqwe421',
+                        author: 'dnerkekekek2ek하하하',
+                        category: 'google',
+                        price: '123222'
+                    })
+                        .then(function (response) {
+                            console.log(response.data);
+                        })
+                },
+                update: function (id) {
+                    axios.put('http://localhost:10081/api/books/update/' + id, {
+
+                        title: '1224qweqweqwe421',
+                        author: 'dnerk23ekekek2ek하',
+                        category: 'google',
+                        price: '123222'
+                    })
+                        .then(function (response) {
+                            console.log(response.data);
+                        })
+                },
+              
+                
+                selectdel: function () {
+                    axios.post('http://localhost:10081/api/books/selectdel', {
+                            userIds: vm.userIds
+                             
+                    })
+                        .then(function (response) {
+                        /* console.log(this.vm.userIds)
+                           console.log(vm.userIds) */
+                           var len = Object.keys(vm.userIds).length 
+                           if(len >0){
+                               alert(response.data)
+                               window.location.href = 'http://localhost:10081/test.html'
+                           }
+                           else{
+                               alert('삭제를 선택해주세요.')
+                           }
+                           
+                        })
+                },
+                
+             gettoken: function() {
+                 axios.post('http://localhost:10081/api/books/gettoken', {
+                    
+                        token: vm.token
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+                
+
+
+
+            },
+             checkAll: function(){
+  			this.userIds = [];
+                 if (!this.selectAll) {
+                     for (let i in this.datas) {
+                         this.userIds.push(this.datas[i].id);
+                     }
+                 }
+               
+    },
+         insert: function (id) {
+            window.location.href = 'http://localhost:10081/update.html?id=' +id
+
+            },
+         dele: function (id) {
+             axios.delete('http://localhost:10081/api/books/delete/' + id, {
+
+             })
+                 .then(function (response) {
+                     alert(id +  '번 삭제 완료');
+                    window.location.href = 'http://localhost:10081/test.html';
+
+                 })
+               }
+
+
+
+        }
+
+        }).$mount('#app');
+        axios.get('http://localhost:10081/api/books')
+            .then(function (response) {
+
+                console.log(response.data)
+                vm.datas = response.data
+                console.log(vm.datas);
+
+            });
+
+
+/*         axios.post('http://localhost:10081/api/books/add', {
+
+            title: '1224qweqweqwe421',
+            author: 'dnerkekekek2ek하하하',
+            category: 'google',
+            price: '123222'
+        })
+            .then(function (response) {
+                console.log(response.data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        axios.put('http://localhost:10081/api/books/update/10', {
+
+            title: '1224qweqwe22qwe421',
+            author: 'dnerkekekek2222ek하',
+            category: 'goog22le',
+            price: '12322222'
+        })
+            .then(function (response) {
+                console.log(response.data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        axios.delete('http://localhost:10081/api/books/delete/118', {
+
+        })
+            .then(function (response) {
+                console.log(response.data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    axios.post('http://localhost:10081/api/books/gettoken', {
+        
+        
+            token : vm.token
+       
+
+    })
+        .then(function (response) {
+            
+          
+            console.log(response.data);
+            console.log(vm.token);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+         */
+        
+
+                    
+
+    </script>
+
+</body>

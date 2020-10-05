@@ -1,0 +1,125 @@
+<!doctype html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<title>로그인</title>
+
+<body>
+<h1>로그인</h1>
+
+    <div id="app">
+        
+        <form v-on:submit.prevent="loginUser">
+        <input type="text" v-model="users.id" placeholder="ID">
+        <input type="password" v-model="users.password" placeholder="password">
+        <button class="btn" type="submit">로그인</button>
+         
+
+        </form>
+
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+    <script src="https://unpkg.com/vuex@2.0.0"></script>
+    <script>
+        
+        
+
+        var vm = new Vue({
+            el: '#app',
+
+            data: {
+
+
+                token: localStorage.getItem('access_token'),
+                users: {
+                    id : '',
+                    password: '',
+                    
+                }
+
+                
+            },
+           
+            headers:{
+                     'Content-Type': 'application/json',
+                "Authorization": 'test1234'
+
+        },
+            methods: {
+      
+
+                  loginUser() {
+
+                      if (this.users.id == ''){
+                          return alert('아이디를 입력해주세요.');
+                      }
+                      if (this.users.password == ''){
+                          return alert('비밀번호를 입력해주세요.');
+                      }
+                      else {
+                          console.log(this.users);
+                          const headers = {
+                              
+                              "Authorization": 'test1234',
+                                "access-token":  'token'        //토큰 값                
+                          }
+                          axios.post('api/login', {
+
+                              id : this.users.id,
+                             password : this.users.password,
+                            
+                                                     
+                      },{headers : headers}).then(function (response){
+                          
+                       console.log(response.data)
+                          
+                          console.log(vm.users) 
+
+                        console.log(response)
+                        console.log(vm.users)
+                          
+                        console.log( response.data.token)
+
+                     if(response.data){
+                         
+                         localStorage.setItem('token', JSON.stringify(response.data.token))
+                          window.location.href = 'http://localhost:10081/test.html';
+                          }
+                          else{
+                              alert('로그인 실패');
+                              window.location.href = window.location.href;
+                              
+                          }  
+                         
+                      }
+
+                      ).catch(function (error) {
+                          console.log(error.response);
+                                             
+/*                     var ID = this.ID.value;
+                    var password = this.password.value;
+                    axios.post('/login', {
+                        ID: ID,
+                        password: password
+                    }); */
+                    
+
+                    
+                      })
+                  }
+                console.log(this.users.id, this.users.password )
+               
+                  }
+                }
+        })
+
+
+    </script>
+
+</body>

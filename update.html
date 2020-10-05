@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+
+<body>
+    <div id="app">
+
+        <table border=1>
+            <tr>
+
+                <td>id</td>
+                <td>title</td>
+                <td>author</td>
+                <td>category</td>
+                <td>price</td>
+                <td>created</td>
+                <td>수정</td>
+            </tr>
+
+            <tr v-for="users in datas" :key="users.id">
+
+                <td>{{users.id}}</td>
+                <td><input type="text" v-model="datas[0].title"></td>
+                <td><input type="text" v-model:value="users.author"></td>
+                <td><input type="text" v-model:value="users.category"></td>
+                <td><input type="text" v-model:value="users.price"></td>
+                <td>{{users.created}}</td>
+                <td onclick="event.cancelBubble=true"><button @click="insert(users.id)">수정</button></td>
+            </tr>
+            
+        </table>
+    </div>
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+<script src="https://unpkg.com/vue-router"></script>
+
+    
+    <script>
+        var getValue = localStorage.getItem('token')
+            console.log(getValue)
+
+            if(!getValue){
+                 window.location.href = 'http://localhost:10081/'
+            }
+     var router = new VueRouter({
+        mode: 'history',
+            routes: []
+        })
+
+
+        var vm = new Vue({
+            router,
+            el: '#app',
+            data: {
+
+                datas: [{}],
+                token : getValue,
+                message: 'Vue',
+                ab : false,
+                userIds: [],
+                users: {
+                    
+                 title: '',
+                 author: '',
+                  category: '',
+                  price: ''
+
+                },
+
+                id :""
+            },
+          mounted: function () {
+             
+                id = this.$route.query.id
+            },
+            
+            methods: {
+
+             
+            insert: function (id) {
+
+          axios.post('http://localhost:10081/api/books/update/' + id, {
+
+                    title: this.datas[0].title,
+                    author: this.datas[0].author,
+                    category: this.datas[0].category,
+                    price: this.datas[0].price
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        alert('수정 성공');
+                        window.location.href = 'http://localhost:10081/test.html'
+                    })
+                },
+
+         dele: function (id) {
+             axios.delete('http://localhost:10081/api/books/delete/' + id, {
+
+             })
+                 .then(function (response) {
+                     alert(id +  '번 삭제 완료');
+                    window.location.href = 'http://localhost:10081/test.html';
+
+                })
+            }
+
+        }
+
+        })
+
+       axios.get('http://localhost:10081/api/books/' + id) //<-id값
+            .then(function (response) {
+             console.log(response.data)
+             vm.datas = response.data
+             console.log(vm.datas)
+
+               })
+
+                    
+
+    </script>
+
+
+</html>
