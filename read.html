@@ -26,8 +26,8 @@
 }
 
 .modal-container {
-  width: 300px;
-  margin: 0px auto;
+  width: 600px;
+  margin: 15px auto;
   padding: 20px 30px;
   background-color: #fff;
   border-radius: 2px;
@@ -47,6 +47,7 @@
 
 .modal-default-button {
   float: right;
+  
 }
 
 .modal-enter {
@@ -76,10 +77,18 @@
         <div class="modal-container">
 
           <div class="modal-header">
+           <button class="modal-default-button" @click="$emit('close')">
+                X
+              </button>
             <slot name="header">
-              
-            </slot>
 
+            </slot>
+             <select name="chartType" id="chartType" @change="updateChartType">
+                <option value="line">Line</option>
+                <option value="bar">Bar</option>
+                <option value="log">log</option>
+
+            </select>
           </div>
           <div class="modal-body">
             <slot name="body">
@@ -87,9 +96,12 @@
             <canvas id="canvas"></canvas>
           </div>
          
-              <button class="modal-default-button" @click="$emit('close')">
-                X
+
+              <button class="modal-random-button" @click="random">
+                랜덤 데이터
               </button>
+
+
             </slot>
           </div>
         </div>
@@ -132,11 +144,12 @@
 
     </div>
     </table>
+    
 <button id="show-modal" @click="showModal = true">그래프 표시</button>
 
 <modal v-if="showModal" @close="showModal = false">
 
-    <h3 slot="header">custom header</h3>
+    <h3 slot="header">그래프타입</h3>
 </modal>
     </div>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -162,41 +175,142 @@
             { x: 7, y: 70 },
 
           ]
-        
 
+      var myChart;
+      var ctx;
+      var myData = {
+
+          labels: ["a", "b", "c", "d", "e", "f", "g"],
+        datasets: [
+          {
+            label: "Data",
+            fill: false,
+            backgroundColor: 'rgb(190, 99, 255, 0.25)',
+            borderColor: 'rgb(190, 99, 255)',
+            data: data,
+          },
+          {
+            label: "More data",
+            fill: false,
+            backgroundColor: 'rgba(255, 99, 132, 0.25)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: moreData,
+          },
+          {
+            label: "log data",
+            fill: false,
+            backgroundColor: 'rgba(0, 0 ,0, 0.25)',
+            borderColor: 'rgb(0, 0, 0)',
+            data: log,
+          }]
+              }
+      
 
         Vue.component('modal', {
+          
           template: '#modal-template',
+          
           mounted: () => {
-            var ctx = document.getElementById('canvas').getContext('2d');
-            var myChart = new Chart(ctx, {
+            
+            ctx = document.getElementById('canvas').getContext('2d');
+
+            myChart = new Chart(ctx, {
+
               type: 'line',
-              data: {
-                labels: ["a", "b", "c", "d", "e", "f", "g"],
-                datasets: [
-                  {
-                    label: "Data",
-                    fill: false,
-                    backgroundColor: 'rgb(190, 99, 255, 0.25)',
-                    borderColor: 'rgb(190, 99, 255)',
-                    data: data,
-                  },
-                  {
-                    label: "More data",
-                    fill: false,
-                    backgroundColor: 'rgba(255, 99, 132, 0.25)',
-                    borderColor: 'rgb(255, 99, 132)',
-                    data: moreData,
-                  },
-                  {
-                    label: "log data",
-                    fill: false,
-                    backgroundColor: 'rgba(0, 0 ,0, 0.25)',
-                    borderColor: 'rgb(0, 0, 0)',
-                    data: log,
-                  }]
-              }
+              data: myData
+
             });
+          },
+          methods:{         
+
+          random: function () {
+            
+            console.log(myData.datasets[2].label)
+            var lg = myData.datasets[2].label
+
+                         
+        // myChart.data.datasets.forEach(function (dataset) {
+        //     dataset.data = dataset.data.map(function () {
+        //         return {
+        //             x: Math.round(Math.random() * 50) + 20,
+        //             y: Math.round(Math.random() * 50) + 20,
+                   
+        //         };
+        //     });
+        // });
+        myChart.data.datasets.forEach(function (dataset) {
+          if(dataset.label == "log data") {
+            dataset.data = dataset.data.map(function () {
+                return {
+                    x: Math.round(Math.random() * 50) + 20,
+                    y: Math.round(Math.random() * 50) + 20,
+                   
+                };
+            });
+          }
+
+        });
+        window.myChart.update();
+    
+            },
+            updateChartType: function(){
+              
+              var target = document.getElementById("chartType");
+
+              var loge = target.options[target.selectedIndex].value
+              
+             
+              if (loge != "log") {
+                myChart.destroy();
+                myChart = new Chart(ctx, {
+
+                  type: document.getElementById("chartType").value,
+                  data: myData,
+
+                });
+              } else {
+
+                myChart.destroy();
+                myChart = new Chart(ctx, {
+
+                  type: 'line',
+                  data: myData,
+                  options: {
+                    scales: {
+                      xAxes: [{
+
+                        type: 'logarithmic'
+                      }],
+                      yAxes: [{
+
+                        ticks: {
+                          beginAtZero: true
+                        },
+                      scaleLabel: {
+                        display: true,
+                        labelString: 'y축',
+
+                        fontSize: 20,
+
+
+
+                        }
+
+
+
+                      }]
+                    }
+                  }
+
+
+
+
+                });
+
+              }
+              
+
+            }
           }
         })
 
@@ -222,7 +336,6 @@
             el: '#app',
             data:
             
-            
              {
 
                 showModal: false,
@@ -239,42 +352,19 @@
 
             },
      
-
              mounted: function () {
 
                 parameters = this.$route.query
 
                 console.log(parameters)
 
-
-
                 id = this.$route.query.id
 
-
-
-
             },
-
             
             methods: {
 
 
-            getData: function () {
-                    axios.get('http://localhost:10081/api/books')
-                        .then(function (response) {
-                            console.log(response.data);
-                            this.datas = response.data;
-                            console.log(this.datas);
-                        })
-                },
-
-                getDataone: function (id) {
-                    axios.get('http://localhost:10081/api/books/'+id)
-                        .then(function (response) {
-                            console.log(response.data);
-                            window.location.href = 'http://localhost:10081/read.html?id='+ id;
-                        })
-                },
                 add: function () {
                     axios.post('http://localhost:10081/api/books/add', {
 
@@ -319,11 +409,10 @@
                         console.log(error);
                     });
 
-                
-
-
-
             },
+
+
+
              
          insert: function (id) {
             window.location.href = 'http://localhost:10081/update.html?id='+id
