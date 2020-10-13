@@ -1,65 +1,328 @@
-
-
-
-
 <!doctype html>
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+        .modal-mask {
+            position: fixed;
+            z-index: 9998;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, .5);
+            display: table;
+            transition: opacity .3s ease;
+        }
+    
+        .modal-wrapper {
+            display: table-cell;
+            vertical-align: middle;
+        }
+    
+        .modal-container {
+            width: 600px;
+    
+    
+            margin: 15px auto;
+            padding: 20px 30px;
+            background-color: #fff;
+            border-radius: 2px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+            transition: all .3s ease;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+    
+        .modal-header h3 {
+            margin-top: 0;
+            color: #42b983;
+        }
+    
+        .modal-body {
+            margin: 20px 0;
+        }
+    
+        .modal-default-button {
+            float: right;
+    
+        }
+    
+        .modal-enter {
+            opacity: 0;
+        }
+    
+        .modal-leave-active {
+            opacity: 0;
+        }
+    
+        .modal-enter .modal-container,
+        .modal-leave-active .modal-container {
+            -webkit-transform: scale(1.1);
+            transform: scale(1.1);
+        }
+    </style>
 </head>
 <title></title>
 
 <body>
-    <div id="app">
+<div id="app">
 
-        <table border=1>
-            <tr>
-                <td><input type="checkbox" name="checkbox" id="checkbox" v-model="selectAll" @click="checkAll" ></td>
-                <td>id</td>
-                <td>title</td>
-                <td>author</td>
-                <td>category</td>
-                <td>price</td>
-                <td>created</td>
-                <td>수정</td>
-                <td>삭제</td>
-            </tr>
-            <span>체크한 아이디: {{ userIds }}</span>
-            <tr v-for="ab in datas" v-bind:key="ab.id" @click="getDataone(ab.id)">
-               
-                <td onclick="event.cancelBubble=true"><input type="checkbox" name="checkbox" v-model="userIds" :value="ab.id" > </td>
-                
-                <td>{{ab.id}}</td>
-                <td>{{ab.title}}</td>
-                <td>{{ab.author}}</td>
-                <td>{{ab.category}}</td>
-                <td>{{ab.price}}</td>
-                <td>{{ab.created}}</td>
-                <td onclick="event.cancelBubble=true"><button @click="insert(ab.id)">update</button></td>
-                <td onclick="event.cancelBubble=true"><button @click="dele(ab.id)">delete</button></td>
-                
+<table border=1>
+    <tr>
+        <td><input type="checkbox" name="checkbox" id="checkbox" v-model="selectAll" @click="checkAll" ></td>
+        <td>id</td>
+        <td>title</td>
+        <td>author</td>
+        <td>category</td>
+        <td>price</td>
+        <td>created</td>
+        <td>수정</td>
+        <td>삭제</td>
+    </tr>
+    <span>체크한 아이디: {{ userIds }}</span>
+    <tr v-for="ab in datas" v-bind:key="ab.id" @click="getDataone(ab.id)">
+        
+        <td onclick="event.cancelBubble=true"><input type="checkbox" name="checkbox" v-model="userIds" :value="ab.id" > </td>
+        
+        <td>{{ab.id}}</td>
+        <td>{{ab.title}}</td>
+        <td>{{ab.author}}</td>
+        <td>{{ab.category}}</td>
+        <td>{{ab.price}}</td>
+        <td>{{ab.created}}</td>
+        <td onclick="event.cancelBubble=true"><button @click="insert(ab.id)">update</button></td>
+        <td onclick="event.cancelBubble=true"><button @click="dele(ab.id)">delete</button></td>
+        
 
-            </tr>
-                
-            
+    </tr>
 
-    </div>
+</div>
     </table>
+
+    
     <div>
 
         <button @click="getData">정보 생성</button>
-        <button @click="getDataone">한개셀렉</button>
-        <button @click="add">입력</button>
-        <button @click="update">수정</button>
+
         <button @click="selectdel">선택 삭제</button>
 
+
+<script type="text/x-template" id="modal-template">
+  <transition name="modal">
+  <div class="modal-mask">
+    <div class="modal-wrapper">
+      <div class="modal-container">
+
+        <div class="modal-header">
+          <button class="modal-default-button" @click="$emit('close')">
+              X
+            </button>
+          <slot name="header">
+
+          </slot>
+            <select name="chartType" id="chartType" @change="updateChartType">
+              <option value="line">Line</option>
+              <option value="bar">Bar</option>
+              <option value="log">log</option>
+
+          </select>
+        </div>
+        <div class="modal-body">
+          <slot name="body">
+          </slot>
+          <canvas id="canvas"></canvas>
+        </div>
+        
+
+            <button class="modal-random-button" @click="random">
+              랜덤 데이터
+            </button>
+
+
+          </slot>
+        </div>
+        </div>
+      </div>
     </div>
+  </transition>
+</script>
+        <button id="show-modal" @click="showModal= true">그래프 표시</button>
+        
+        <modal v-if="showModal" @close="showModal= false">
+        
+            <h3 slot="header">그래프타입</h3>
+        </modal>
+    </div>
+
     </div>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-style@0.5.0"></script>
     
     <script>
+    Vue.component('modal', {
+
+     template: '#modal-template',
+            mounted: () => {
+
+            ctx = document.getElementById('canvas').getContext('2d');
+
+            myChart = new Chart(ctx, {
+
+                type: 'line',
+                data: myData
+
+            });
+            },
+    methods: {
+
+    random: function () {
+
+    console.log(myData.datasets[2].label)
+    var lg = myData.datasets[2].label
+
+
+    myChart.data.datasets.forEach(function (dataset, i) {
+        let newData = Data.map(x => Math.floor(Math.random() * 50));
+        let newmoreData = moreData.map(x => Math.floor(Math.random() * 40));
+
+
+        if (dataset.label == "log data") {
+            dataset.data = dataset.data.map(function () {
+                return {
+                    x: Math.round(Math.random() * 5) + 2,
+                    y: Math.round(Math.random() * 5) + 3,
+
+                };
+
+            });
+        }
+        else {
+
+            myData.datasets[i].data = myData.datasets[i].data.map(x => Math.floor(Math.random() * 50))
+
+        }
+
+
+    });
+
+
+            window.myChart.update();
+
+        },
+        updateChartType: function () {
+
+            var target = document.getElementById("chartType");
+
+            var loge = target.options[target.selectedIndex].value
+
+
+            if (loge != "log") {
+                myChart.destroy();
+                myChart = new Chart(ctx, {
+
+                    type: document.getElementById("chartType").value,
+                    data: myData,
+
+                });
+            } else {
+
+                myChart.destroy();
+                myChart = new Chart(ctx, {
+
+                    type: 'line',
+                    data: myData,
+                    options: {
+                        scales: {
+                            xAxes: [{
+
+                                type: 'logarithmic'
+                            }],
+                            yAxes: [{
+
+                                ticks: {
+                                    beginAtZero: true
+                                },
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'y축',
+
+                                    fontSize: 20,
+
+
+
+                                }
+
+
+
+                            }]
+                        }
+                    }
+
+
+
+
+                });
+
+            }
+
+
+        }
+    }
+})
+
+
+
+    var randomScalingFactor = function () {
+            return Math.ceil(Math.random() * 10.0) * Math.pow(10, Math.ceil(Math.random() * 5));
+          };
+        Chart.defaults.global.defaultFontFamily = "monospace";
+
+        let Data = [1, 10, 5, 2, 20, 30, 45];
+          let moreData = [20, 30, 15, 12, 21, 30, 40];
+          let log = [
+            { x: 1, y: 1 },
+            { x: 2, y: 2 },
+            { x: 3, y: 3 },
+            { x: 4, y: 4 },
+            { x: 5, y: 5 },
+            { x: 6, y: 6 },
+            { x: 7, y: 70 },
+
+          ]
+
+      var myChart;
+      var ctx;
+      var myData = {
+
+          labels: ["a", "b", "c", "d", "e", "f", "g"],
+        datasets: [
+          {
+            label: "Data",
+            fill: false,
+            backgroundColor: 'rgb(190, 99, 255, 0.25)',
+            borderColor: 'rgb(190, 99, 255)',
+            data: Data,
+          },
+          {
+            label: "More data",
+            fill: false,
+            backgroundColor: 'rgba(255, 99, 132, 0.25)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: moreData,
+          },
+          {
+            label: "log data",
+            fill: false,
+            backgroundColor: 'rgba(0, 0 ,0, 0.25)',
+            borderColor: 'rgb(0, 0, 0)',
+            data: log,
+          }]
+              }
+
+
+
         var getValue = localStorage.getItem('token');
             console.log(getValue); 
 
@@ -71,7 +334,7 @@
         var vm = new Vue({
             el: '#app',
             data: {
-
+                showModal: false,
                 datas: [{}],
                 token : getValue,
                 message: 'Vue',
@@ -99,7 +362,7 @@
                     axios.post('http://localhost:10081/api/books/add', {
 
                         title: '1224qweqweqwe421',
-                        author: 'dnerkekekek2ek하하하',
+                        author: 'dnerkekekek2',
                         category: 'google',
                         price: '123222'
                     })

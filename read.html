@@ -27,6 +27,8 @@
 
 .modal-container {
   width: 600px;
+
+
   margin: 15px auto;
   padding: 20px 30px;
   background-color: #fff;
@@ -72,75 +74,74 @@
 <body>
 <script type="text/x-template" id="modal-template">
   <transition name="modal">
-    <div class="modal-mask">
-      <div class="modal-wrapper">
-        <div class="modal-container">
+  <div class="modal-mask">
+    <div class="modal-wrapper">
+      <div class="modal-container">
 
-          <div class="modal-header">
-           <button class="modal-default-button" @click="$emit('close')">
-                X
-              </button>
-            <slot name="header">
+        <div class="modal-header">
+          <button class="modal-default-button" @click="$emit('close')">
+              X
+            </button>
+          <slot name="header">
 
-            </slot>
-             <select name="chartType" id="chartType" @change="updateChartType">
-                <option value="line">Line</option>
-                <option value="bar">Bar</option>
-                <option value="log">log</option>
+          </slot>
+            <select name="chartType" id="chartType" @change="updateChartType">
+              <option value="line">Line</option>
+              <option value="bar">Bar</option>
+              <option value="log">log</option>
 
-            </select>
-          </div>
-          <div class="modal-body">
-            <slot name="body">
-            </slot>
-            <canvas id="canvas"></canvas>
-          </div>
-         
+          </select>
+        </div>
+        <div class="modal-body">
+          <slot name="body">
+          </slot>
+          <canvas id="canvas"></canvas>
+        </div>
+        
 
-              <button class="modal-random-button" @click="random">
-                랜덤 데이터
-              </button>
+            <button class="modal-random-button" @click="random">
+              랜덤 데이터
+            </button>
 
 
-            </slot>
-          </div>
+          </slot>
+        </div>
         </div>
       </div>
     </div>
   </transition>
 </script>
-    <div id="app">
+<div id="app">
 
-        <table border=1>
-            <tr>
-                
-                <td>id</td>
-                <td>title</td>
-                <td>author</td>
-                <td>category</td>
-                <td>price</td>
-                <td>created</td>
-                <td>수정</td>
-                <td>삭제</td>
-            </tr>
+    <table border=1>
+        <tr>
             
-            <tr v-for="ab in datas" v-bind:key="ab.id" >
-               
-                
-                
-                <td>{{ab.id}}</td>
-                <td>{{ab.title}}</td>
-                <td>{{ab.author}}</td>
-                <td>{{ab.category}}</td>
-                <td>{{ab.price}}</td>
-                <td>{{ab.created}}</td>
-                <td onclick="event.cancelBubble=true"><button @click="insert(ab.id)">update</button></td>
-                <td onclick="event.cancelBubble=true"><button @click="dele(ab.id)">delete</button></td>
-                
+            <td>id</td>
+            <td>title</td>
+            <td>author</td>
+            <td>category</td>
+            <td>price</td>
+            <td>created</td>
+            <td>수정</td>
+            <td>삭제</td>
+        </tr>
+        
+        <tr v-for="ab in datas" v-bind:key="ab.id" >
+            
+            
+            
+            <td>{{ab.id}}</td>
+            <td>{{ab.title}}</td>
+            <td>{{ab.author}}</td>
+            <td>{{ab.category}}</td>
+            <td>{{ab.price}}</td>
+            <td>{{ab.created}}</td>
+            <td onclick="event.cancelBubble=true"><button @click="insert(ab.id)">update</button></td>
+            <td onclick="event.cancelBubble=true"><button @click="dele(ab.id)">delete</button></td>
+            
 
-            </tr>
-                
-            
+        </tr>
+
 
     </div>
     </table>
@@ -160,10 +161,12 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-style@0.5.0"></script>
     
     <script>
-
+      	var randomScalingFactor = function () {
+            return Math.ceil(Math.random() * 10.0) * Math.pow(10, Math.ceil(Math.random() * 5));
+          };
         Chart.defaults.global.defaultFontFamily = "monospace";
 
-        let data = [1, 10, 5, 2, 20, 30, 45];
+        let Data = [1, 10, 5, 2, 20, 30, 45];
           let moreData = [20, 30, 15, 12, 21, 30, 40];
           let log = [
             { x: 1, y: 1 },
@@ -187,7 +190,7 @@
             fill: false,
             backgroundColor: 'rgb(190, 99, 255, 0.25)',
             borderColor: 'rgb(190, 99, 255)',
-            data: data,
+            data: Data,
           },
           {
             label: "More data",
@@ -238,27 +241,31 @@
         //         };
         //     });
         // });
-        myChart.data.datasets.forEach(function (dataset) {
+        myChart.data.datasets.forEach(function (dataset, i) {
+          let newData = Data.map(x => Math.floor(Math.random() * 50));
+          let newmoreData = moreData.map(x => Math.floor(Math.random() * 40));
+
+
           if(dataset.label == "log data") {
             dataset.data = dataset.data.map(function () {
                 return {
-                    x: Math.round(Math.random() * 50) + 20,
-                    y: Math.round(Math.random() * 50) + 20,
+                    x: Math.round(Math.random() * 5) + 2,
+                    y: Math.round(Math.random() * 5) + 3,
                    
                 };
-
+               
             });
           }
           else{
-              dataset.data = dataset.data.map(function () {
 
-                
-
-
-              })
-          }
+            myData.datasets[i].data = myData.datasets[i].data.map(x => Math.floor(Math.random() * 50))
+            
+          }       
+          
 
         });
+ 
+
         window.myChart.update();
     
             },
