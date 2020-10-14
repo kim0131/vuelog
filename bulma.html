@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="main.css" />
+    <link rel="stylesheet" href="bulma.min.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+
+</head>
+<body>
+<div id='app'>
+    <modal title='그래프'>
+        <p class="image is-4by3">
+            <img src="http://bulma.io/images/placeholders/1280x960.png">
+        </p>
+    </modal>
+    <modal title='Show Box'>
+        <h1>Hello World</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla accumsan, metus ultrices eleifend gravida, nulla nunc varius lectus, nec rutrum justo nibh eu lectus. Ut vulputate semper dui. Fusce erat odio, sollicitudin vel erat vel, interdum mattis neque.</p>
+    </modal>
+</div>
+
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+
+<script>
+    Vue.component('modal', {
+            data: function () {
+                return {
+                    isModalActive: false
+                }
+            },
+            props: ['buttonText', 'title'],
+            template: `
+  <div class='my-modal'>
+    <a class="button is-primary" @click='isModalActive=true'>{{ title }}</a>
+    <div class="modal" :class="{ 'is-active': isModalActive }">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <slot></slot>
+      </div>
+      <button class="modal-close" @click='isModalActive=false'></button>
+    </div>  
+  </div>
+  `
+        })
+
+        new Vue({
+            el: '#app'
+        })
+</script>

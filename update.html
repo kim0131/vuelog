@@ -3,113 +3,15 @@
 
 <head>
     <title></title>
+    <link rel="stylesheet" type="text/css" href="main.css" />
+    <link rel="stylesheet" href="bulma.min.css" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-    
-<style>
-    .modal-mask {
-        position: fixed;
-        z-index: 9998;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, .5);
-        display: table;
-        transition: opacity .3s ease;
-    }
-
-    .modal-wrapper {
-        display: table-cell;
-        vertical-align: middle;
-    }
-
-    .modal-container {
-        width: 600px;
-
-
-        margin: 15px auto;
-        padding: 20px 30px;
-        background-color: #fff;
-        border-radius: 2px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
-        transition: all .3s ease;
-        font-family: Helvetica, Arial, sans-serif;
-    }
-
-    .modal-header h3 {
-        margin-top: 0;
-        color: #42b983;
-    }
-
-    .modal-body {
-        margin: 20px 0;
-    }
-
-    .modal-default-button {
-        float: right;
-
-    }
-
-    .modal-enter {
-        opacity: 0;
-    }
-
-    .modal-leave-active {
-        opacity: 0;
-    }
-
-    .modal-enter .modal-container,
-    .modal-leave-active .modal-container {
-        -webkit-transform: scale(1.1);
-        transform: scale(1.1);
-    }
-    </style>
-
 
 
 </head>
 
 <body>
-    <script type="text/x-template" id="modal-template">
-      <transition name="modal">
-      <div class="modal-mask">
-        <div class="modal-wrapper">
-          <div class="modal-container">
-    
-            <div class="modal-header">
-              <button class="modal-default-button" @click="$emit('close')">
-                  X
-                </button>
-              <slot name="header">
-    
-              </slot>
-                <select name="chartType" id="chartType" @change="updateChartType">
-                  <option value="line">Line</option>
-                  <option value="bar">Bar</option>
-                  <option value="log">log</option>
-    
-              </select>
-            </div>
-            <div class="modal-body">
-              <slot name="body">
-              </slot>
-              <canvas id="canvas"></canvas>
-            </div>
-            
-    
-                <button class="modal-random-button" @click="random">
-                  랜덤 데이터
-                </button>
-    
-    
-              </slot>
-            </div>
-            </div>
-          </div>
-        </div>
-      </transition>
-    </script>
+
     <div id="app">
 
         <table border=1>
@@ -136,12 +38,10 @@
             </tr>
             
         </table>
-        <button id="show-modal" @click="showModal = true">그래프 표시</button>
-        
-        <modal v-if="showModal" @close="showModal = false">
-        
-            <h3 slot="header">그래프타입</h3>
-        </modal>
+    <modal title='그래프 표시'>
+    
+    
+    </modal>
     </div>
 </body>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -153,8 +53,42 @@
     
     <script>
         Vue.component('modal', {
+                data: function () {
+                    return {
+                        isModalActive: false
 
-        template: '#modal-template',
+                    }
+                },
+                props: ['buttonText', 'title'],
+
+                template: `
+  <div class='my-modal'>
+    <a class="button is-primary" @click='isModalActive=true'>{{ title }}</a>
+    <div class="modal" :class="{ 'is-active': isModalActive }">
+      <div class="modal-background">
+
+</div>
+      <div class="modal-content has-background-white">
+      그래프 타입
+    <select name="chartType" id="chartType" @change="updateChartType">
+    <option value="line">Line</option>
+    <option value="bar">Bar</option>
+    <option value="log">log</option>
+
+    </select>
+    <div class="modal-card">
+    <canvas id="canvas"></canvas>
+      </div>
+        <slot></slot>
+        <button class="modal-random-button" @click="random">
+              RANDOM
+            </button>
+      </div>
+      <button class="modal-close" @click='isModalActive=false'></button>
+      
+    </div>  
+  </div>
+  `,
         mounted: () => {
 
        ctx = document.getElementById('canvas').getContext('2d');

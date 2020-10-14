@@ -1,71 +1,16 @@
 <!doctype html>
 
 <head>
+    <link rel="stylesheet" href="bulma.min.css" />
+    <link rel="stylesheet" type="text/css" href="main.css"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <style>
-        .modal-mask {
-            position: fixed;
-            z-index: 9998;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, .5);
-            display: table;
-            transition: opacity .3s ease;
-        }
     
-        .modal-wrapper {
-            display: table-cell;
-            vertical-align: middle;
-        }
-    
-        .modal-container {
-            width: 600px;
-    
-    
-            margin: 15px auto;
-            padding: 20px 30px;
-            background-color: #fff;
-            border-radius: 2px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
-            transition: all .3s ease;
-            font-family: Helvetica, Arial, sans-serif;
-        }
-    
-        .modal-header h3 {
-            margin-top: 0;
-            color: #42b983;
-        }
-    
-        .modal-body {
-            margin: 20px 0;
-        }
-    
-        .modal-default-button {
-            float: right;
-    
-        }
-    
-        .modal-enter {
-            opacity: 0;
-        }
-    
-        .modal-leave-active {
-            opacity: 0;
-        }
-    
-        .modal-enter .modal-container,
-        .modal-leave-active .modal-container {
-            -webkit-transform: scale(1.1);
-            transform: scale(1.1);
-        }
-    </style>
 </head>
 <title></title>
 
 <body>
 <div id="app">
+
 
 <table border=1>
     <tr>
@@ -79,7 +24,9 @@
         <td>수정</td>
         <td>삭제</td>
     </tr>
+
     <span>체크한 아이디: {{ userIds }}</span>
+
     <tr v-for="ab in datas" v-bind:key="ab.id" @click="getDataone(ab.id)">
         
         <td onclick="event.cancelBubble=true"><input type="checkbox" name="checkbox" v-model="userIds" :value="ab.id" > </td>
@@ -100,16 +47,19 @@
     </table>
 
     
-    <div>
+    <div style="float:left">
 
         <button @click="getData">정보 생성</button>
 
         <button @click="selectdel">선택 삭제</button>
+    <modal title='그래프 표시' >
+    
+    
+    </modal>
 
-
-<script type="text/x-template" id="modal-template">
+<!-- <script type="text/x-template" id="modal-template">
   <transition name="modal">
-  <div class="modal-mask">
+  <div class="modal-mask" >
     <div class="modal-wrapper">
       <div class="modal-container">
 
@@ -145,13 +95,13 @@
       </div>
     </div>
   </transition>
-</script>
-        <button id="show-modal" @click="showModal= true">그래프 표시</button>
+</script> -->
+<!--         <button id="show-modal" @click="showModal= true">그래프 표시</button>
         
         <modal v-if="showModal" @close="showModal= false">
         
-            <h3 slot="header">그래프타입</h3>
-        </modal>
+            <h3 slot="header">그래프타입</h3> -->
+        <!-- </modal> -->
     </div>
 
     </div>
@@ -162,16 +112,51 @@
     
     <script>
     Vue.component('modal', {
+            data: function () {
+                return {
+                    isModalActive: false
 
-     template: '#modal-template',
-            mounted: () => {
+                }
+            },
 
-            ctx = document.getElementById('canvas').getContext('2d');
+      props: ['buttonText', 'title'],
 
-            myChart = new Chart(ctx, {
+      template: `
+  <div class='my-modal'  style="float:right">
+    <a class="button is-primary" @click='isModalActive=true'>{{ title }}</a>
+    <div class="modal" :class="{ 'is-active': isModalActive }">
+      <div class="modal-background">
 
-                type: 'line',
-                data: myData
+</div>
+      <div class="modal-content has-background-white">
+      그래프 타입
+    <select name="chartType" id="chartType" @change="updateChartType">
+    <option value="line">Line</option>
+    <option value="bar">Bar</option>
+    <option value="log">log</option>
+
+    </select>
+    <div class="modal-card">
+    <canvas id="canvas"></canvas>
+      </div>
+        <slot></slot>
+        <button class="modal-random-button" @click="random">
+              RANDOM
+            </button>
+      </div>
+      <button class="modal-close" @click='isModalActive=false'></button>
+      
+    </div>  
+  </div>
+  `,
+    mounted: () => {
+
+    ctx = document.getElementById('canvas').getContext('2d');
+
+    myChart = new Chart(ctx, {
+
+    type: 'line',
+    data: myData
 
             });
             },
@@ -191,8 +176,8 @@
         if (dataset.label == "log data") {
             dataset.data = dataset.data.map(function () {
                 return {
-                    x: Math.round(Math.random() * 5) + 2,
-                    y: Math.round(Math.random() * 5) + 3,
+                    x: (Math.random() > 0.5 ? 1.0 : -1.0) * Math.random() * 100,
+                    y: (Math.random() > 0.5 ? 1.0 : -1.0) * Math.random() * 100,
 
                 };
 
@@ -200,7 +185,7 @@
         }
         else {
 
-            myData.datasets[i].data = myData.datasets[i].data.map(x => Math.floor(Math.random() * 50))
+            myData.datasets[i].data = myData.datasets[i].data.map(x => Math.floor(Math.random() * 80))
 
         }
 
@@ -321,8 +306,6 @@
           }]
               }
 
-
-
         var getValue = localStorage.getItem('token');
             console.log(getValue); 
 
@@ -374,7 +357,7 @@
                     axios.put('http://localhost:10081/api/books/update/' + id, {
 
                         title: '1224qweqweqwe421',
-                        author: 'dnerk23ekekek2ek하',
+                        author: 'dnerk23ekekek2e',
                         category: 'google',
                         price: '123222'
                     })
