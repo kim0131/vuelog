@@ -32,6 +32,9 @@ class funbook
         }
     }
 
+
+
+
     public function reada(Request $request, Response $reponse, array $args)
     {
         $id = $request->getAttribute('id');
@@ -177,8 +180,6 @@ class funbook
 
     }
 
-
-
     public function gettoken(Request $request, Response $reponse, array $args)
     {
         $token = $request->getParam('token');
@@ -201,6 +202,99 @@ class funbook
             
         }
     }
+    //10.15 admin 유저정보 조회 추가
+    public function users(Request $request, Response $reponse)
+    {
+        $sql = "SELECT * FROM VueLogin";
+
+        try {
+
+            $db = new db();
+            $pdo = $db->pdo;
+
+            $stmt = $pdo->query($sql);
+            $books = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+            $pdo = null;
+            echo json_encode($books, JSON_UNESCAPED_UNICODE);
+        } catch (\PDOException $e) {
+            echo '{"msg": {"resp": ' . $e->getMessage() . '}}';
+        }
+    }
+
+    public function userdel(Request $request, Response $reponse, array $args)
+    {
+        $id = $request->getAttribute('id');
+
+        try {
+            //get db object
+            $db = new db();
+            //conncect
+            $pdo = $db->pdo;
+
+            $sql = "DELETE FROM VueLogin WHERE id=?";
+
+            $pdo->prepare($sql)->execute([$id]);
+            $pdo = null;
+
+            echo '{' . $id . '번 삭제}';
+        } catch (\PDOException $e) {
+            echo '{"error": {"text": ' . $e->getMessage() . '}}';
+        }
+    }
+    public function user(Request $request, Response $reponse, array $args)
+    {
+        $id = $request->getAttribute('id');
+
+        $sql = "SELECT * FROM VueLogin where id = $id";
+
+        try {
+            $db = new db();
+            $pdo = $db->pdo;
+
+            $stmt = $pdo->query($sql);
+            $user = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+            $pdo = null;
+
+
+            echo json_encode($user, JSON_UNESCAPED_UNICODE);
+        } catch (\PDOException $e) {
+            echo '{"msg": {"resp": ' . $e->getMessage() . '}}';
+        }
+    }
+public function Userupdate(Request $request, Response $reponse, array $args)
+{
+    $id = $request->getAttribute('id');
+    $USERID = $request->getParam('USERID');
+    $PASSWORD = $request->getParam('PASSWORD');
+    $GROUP = $request->getParam('GROUP');   
+    $created = date("Y-m-d H:i:s");
+
+    echo $GROUP;
+    echo $id, $USERID, $PASSWORD;
+    try {
+        //get db object
+        $db = new db();
+        //conncect
+        $pdo = $db->pdo;
+
+
+        $sql = "UPDATE VueLogin SET USERID =?, PASSWORD=?, `GROUP`=?,CREATED=? WHERE id=?";
+
+
+        $pdo->prepare($sql)->execute([$USERID, $PASSWORD, $GROUP, $created, $id]);
+
+
+        $pdo = null;
+        echo '{' . $id . '수정 성공}';
+    } catch (\PDOException $e) {
+
+        echo '{"error": {"text": ' . $e->getMessage() . '}}';
+    } catch (Exception $e) {
+        echo '{"error": {"text": ' . $e->getMessage() . '}}';
+    }
+}
 
 
 

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+<head>
+    
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title></title>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+</head>
+
+<body>
+<div id="app">
+
+    <table border=1>
+        <tr>
+
+            <td>사용자 ID</td>
+            <td>부서</td>
+
+            <td>수정</td>
+            <td>삭제</td>
+
+        </tr>
+    <tr v-for="ab in datas" v-bind:key="ab.ID" >
+                
+                <td>{{ab.USERID}}</td>
+                <td>{{ab.GROUP}}</td>
+        <td><button @click="update(ab.ID)">update</button></td>
+        <td><button @click="userdel(ab.ID)">delete</button></td>
+    </tr>
+    </table>
+    </div>
+    <script type="text/javascript">
+         var vm =  new Vue({
+            el: '#app',
+            data: {
+
+               datas: [{}]
+
+            },
+            methods:{
+                update: function (id) {
+                    window.location.href = 'http://localhost:10081/register.html?id=' + id
+
+                },
+
+                userdel: function (id) {
+                    axios.delete('http://localhost:10081/api/userdel/' + id, {
+
+                    })
+                        .then(function (response) {
+                            alert(id + '번 삭제 완료');
+                            window.location.href = 'http://localhost:10081/admin.html';
+
+                        })
+                }
+
+                
+
+            }
+        });
+
+    axios.get('http://localhost:10081/api/users')
+    
+        .then(function (response) {
+
+            console.log(response.data)
+            vm.datas = response.data
+            console.log(vm.datas);
+
+        });
+
+    </script>
+
+</body>
+
+</html>

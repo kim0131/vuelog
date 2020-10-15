@@ -7,10 +7,10 @@
     <link rel="stylesheet" type="text/css" href="main.css" />
   <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
   <script src="	https://cdnjs.cloudflare.com/ajax/libs/vue-chartjs/3.5.0/vue-chartjs.min.js"></script>
-
+<title></title>
 
 </head>
-<title></title>
+
 
 <body>
 
@@ -56,7 +56,7 @@
 
     </div>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/vue-router"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
@@ -64,20 +64,21 @@
     
     <script>
       	var randomScalingFactor = function () {
-            return Math.ceil(Math.random() * 10.0) * Math.pow(10, Math.ceil(Math.random() * 5));
+            return Math.floor(Math.random() * 40);
           };
         Chart.defaults.global.defaultFontFamily = "monospace";
 
         let Data = [1, 10, 5, 2, 20, 30, 45];
-          let moreData = [20, 30, 15, 12, 21, 30, 40];
+          let moreData = [
+            randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()];
           let log = [
-            { x: 1, y: 1 },
-            { x: 2, y: 2 },
-            { x: 3, y: 3 },
-            { x: 4, y: 4 },
-            { x: 5, y: 5 },
-            { x: 6, y: 6 },
-            { x: 7, y: 70 },
+            { x: randomScalingFactor(), y: randomScalingFactor() },
+            { x: randomScalingFactor(), y: randomScalingFactor() },
+            { x: randomScalingFactor(), y: randomScalingFactor() },
+            { x: randomScalingFactor(), y: randomScalingFactor() },
+            { x: randomScalingFactor(), y: randomScalingFactor() },
+            { x: randomScalingFactor(), y: randomScalingFactor() },
+            { x: randomScalingFactor(), y: randomScalingFactor() },
 
           ]
 
@@ -185,8 +186,8 @@
           if(dataset.label == "log data") {
             dataset.data = dataset.data.map(function () {
                 return {
-                    x: (Math.random() > 0.5 ? 1.0 : -1.0) * Math.random() * 100,
-                    y: (Math.random() > 0.5 ? 1.0 : -1.0) * Math.random() * 100,
+                    x: Math.ceil(Math.random() * 0.3) * Math.pow(10, Math.ceil(Math.random() * 3)),
+                    y: Math.ceil(Math.random() * 0.2) * Math.pow(10, Math.ceil(Math.random() * 2)),
                    
                 };
                
@@ -221,7 +222,7 @@
 
                 });
               } else {
-
+                  console.log(myData)
                 myChart.destroy();
                 myChart = new Chart(ctx, {
 
@@ -231,7 +232,11 @@
                     scales: {
                       xAxes: [{
 
-                        type: 'logarithmic'
+                        type: 'logarithmic',
+                        ticks:{
+                          min : 1,
+                          max: 60
+                        }
                       }],
                       yAxes: [{
 
