@@ -48,9 +48,6 @@
     </tr>
 </table>
 
-    
-        
- 
         <button @click="selectdel">선택 삭제</button>
         <button @click="getData">정보 생성</button>
 
@@ -118,7 +115,7 @@
     
     <script type="text/javascript">
 
-        var router = new VueRouter({
+    var router = new VueRouter({
             mode: 'history',
             routes: []
         });
@@ -134,33 +131,33 @@
       props: ['buttonText', 'title'],
 
       template: `
-  <div class='my-modal'  style="float:right">
-    <a class="button is-primary" @click='isModalActive=true'>{{ title }}</a>
-    <div class="modal" :class="{ 'is-active': isModalActive }">
-      <div class="modal-background">
+    <div class='my-modal'  style="float:right">
+        <a class="button is-primary" @click='isModalActive=true'>{{ title }}</a>
+        <div class="modal" :class="{ 'is-active': isModalActive }">
+        <div class="modal-background">
 
-</div>
-      <div class="modal-content has-background-white">
-      그래프 타입
-    <select name="chartType" id="chartType" @change="updateChartType">
-    <option value="line">Line</option>
-    <option value="bar">Bar</option>
-    <option value="log">log</option>
+    </div>
+        <div class="modal-content has-background-white">
+        그래프 타입
+        <select name="chartType" id="chartType" @change="updateChartType">
+        <option value="line">Line</option>
+        <option value="bar">Bar</option>
+        <option value="log">log</option>
 
-    </select>
-    <div class="modal-card">
-    <canvas id="canvas"></canvas>
-      </div>
-        <slot></slot>
-        <button class="modal-random-button" @click="random">
-              RANDOM
-            </button>
-      </div>
-      <button class="modal-close" @click='isModalActive=false'></button>
-      
-    </div>  
-  </div>
-  `,
+        </select>
+        <div class="modal-card">
+        <canvas id="canvas"></canvas>
+        </div>
+            <slot></slot>
+            <button class="modal-random-button" @click="random">
+                RANDOM
+                </button>
+        </div>
+        <button class="modal-close" @click='isModalActive=false'></button>
+        
+        </div>  
+    </div>
+    `,
     mounted: () => {
 
     ctx = document.getElementById('canvas').getContext('2d');
@@ -268,8 +265,6 @@
     }
 }
 })
-
-
 
     var randomScalingFactor = function () {
         return Math.ceil(Math.random() * 10.0) * Math.pow(10, Math.ceil(Math.random() * 5));
@@ -424,11 +419,12 @@
                 }
                
     },
-         update: function (id) {
+
+       update: function (id) {
             window.location.href = 'http://localhost:10081/update.html?id=' +id
 
             },
-         dele: function (id) {
+       dele: function (id) {
              axios.delete('http://localhost:10081/api/books/delete/' + id, {
 
              })
@@ -443,7 +439,7 @@
 
         }
 
-        }).$mount('#app');
+    }).$mount('#app');
         
         axios.get('http://localhost:10081/api/books')
             .then(function (response) {
@@ -452,7 +448,7 @@
                 vm.datas = response.data
                 console.log(vm.datas);
 
-            });
+                });
           axios.post('api/admincheck', {
 
             adid: userid,
@@ -463,14 +459,10 @@
                 .then(function (response) {
 
                     vm.admin = response.data[0].admin
-                     
-
-                });
-
-             
-
-
                     
+
+             });
+              
 
     </script>
 
