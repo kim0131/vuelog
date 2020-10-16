@@ -31,6 +31,8 @@
                 <td><button @click="userdel(users.ID)">삭제</button></td>
                 
             </tr>
+            </table>
+            <button @click="back">뒤로</button>
 
     <script type="text/javascript">
 
@@ -55,13 +57,21 @@
                     },
                     
 
-                  mounted: function () {
+            mounted: function () {
 
-                      id = this.$route.query.id
-                 },
+                id = this.$route.query.id
+            },
 
 
-                 methods:{
+            methods:{
+
+            back: function (){
+
+                window.location.href = 'http://localhost:10081/admin.html';
+                
+            },
+
+
           update: function (id) {
 
             axios.post('http://localhost:10081/api/Userupdate/' + id, {

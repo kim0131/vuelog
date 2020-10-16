@@ -293,9 +293,36 @@ public function Userupdate(Request $request, Response $reponse, array $args)
         echo '{"error": {"text": ' . $e->getMessage() . '}}';
     } catch (Exception $e) {
         echo '{"error": {"text": ' . $e->getMessage() . '}}';
+    } catch(Error $e) {
+        echo '{"error": {"text": ' . $e->getMessage() . '}}';
     }
+
 }
 
+    public function admincheck(Request $request, Response $reponse, array $args)
+    {
+        $userid = $request->getParam('adid');
+        $password = $request->getParam('adpass');
+
+       
+        
+        $sql = "SELECT * FROM VueLogin WHERE USERID = '$userid' AND PASSWORD = '$password'";
+
+        try {
+            $db = new db();
+            $pdo = $db->pdo;
+
+            $stmt = $pdo->query($sql);
+            $user = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+            $pdo = null;
+
+
+            echo json_encode($user, JSON_UNESCAPED_UNICODE);
+        } catch (\PDOException $e) {
+            echo '{"msg": {"resp": ' . $e->getMessage() . '}}';
+        }
+    }
 
 
 }

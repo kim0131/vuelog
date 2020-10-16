@@ -25,7 +25,11 @@
         <td>삭제</td>
     </tr>
 
-    <span>체크한 아이디: {{ userIds }}</span>
+   
+    <div v-if="admin === 'Y'">
+        
+        <button @click="admincheck()">관리자 페이지</button>
+    </div>
 
     <tr v-for="ab in datas" v-bind:key="ab.id" @click="getDataone(ab.id)">
         
@@ -43,19 +47,20 @@
 
     </tr>
 </table>
-</div>
-    
 
     
-    <div style="float:left">
-
+        
+ 
+        <button @click="selectdel">선택 삭제</button>
         <button @click="getData">정보 생성</button>
 
-        <button @click="selectdel">선택 삭제</button>
-    <modal title='그래프 표시' >
-    
-    
-    </modal>
+        <div style="float:left">
+            <modal title='그래프 표시'>
+        
+        
+        </modal>
+    </div>
+
 
 <!-- <script type="text/x-template" id="modal-template">
   <transition name="modal">
@@ -102,15 +107,22 @@
         
             <h3 slot="header">그래프타입</h3> -->
         <!-- </modal> -->
-    </div>
+   
 
     </div>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-style@0.5.0"></script>
+    <script src="https://unpkg.com/vue-router"></script>
     
-    <script>
+    <script type="text/javascript">
+
+        var router = new VueRouter({
+            mode: 'history',
+            routes: []
+        });
+
     Vue.component('modal', {
             data: function () {
                 return {
@@ -315,6 +327,7 @@
 
 
     var vm = new Vue({
+        router,
         el: '#app',
         data: {
 
@@ -324,11 +337,32 @@
             message: 'Vue',
             ab : false,
             userIds: [],                
-            selectAll: false
+            selectAll: false,
+            admin: '',
+            userid:'',
+            password:''
             
+        },
+          mounted: function () {
+             parameters = this.$route.query
+
+              console.log(parameters)
+
+            userid = this.$route.query.id
+            userpassword = this.$route.query.password
+
+
+
         },
 
     methods: {
+        //1016 admin
+        admincheck: function(){
+            window.location.href = 'http://localhost:10081/admin.html'
+
+        },
+        
+        
 
      getData: function () {
         window.location.href = 'http://localhost:10081/create.html'
@@ -439,7 +473,25 @@
                 console.log(vm.datas);
 
             });
+          axios.post('api/admincheck', {
 
+            adid: userid,
+            adpass: userpassword,
+
+
+                            })
+
+                .then(function (response) {
+
+                    
+
+                    console.log(response.data[0].admin)
+                    vm.admin = response.data[0].admin
+                     
+
+                });
+
+             
 
 /*         axios.post('http://localhost:10081/api/books/add', {
 
