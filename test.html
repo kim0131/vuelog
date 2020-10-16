@@ -344,25 +344,18 @@
             
         },
           mounted: function () {
-             parameters = this.$route.query
-
-              console.log(parameters)
-
+            parameters = this.$route.query
             userid = this.$route.query.id
             userpassword = this.$route.query.password
-
-
 
         },
 
     methods: {
         //1016 admin
-        admincheck: function(){
+    admincheck: function(){
             window.location.href = 'http://localhost:10081/admin.html'
 
         },
-        
-        
 
      getData: function () {
         window.location.href = 'http://localhost:10081/create.html'
@@ -375,8 +368,8 @@
                     window.location.href = 'http://localhost:10081/read.html?id='+ id;
                 })
         },
-            add: function () {
-        axios.post('http://localhost:10081/api/books/add', {
+        add: function () {
+         axios.post('http://localhost:10081/api/books/add', {
 
             title: '1224qweqweqwe421',
             author: 'dnerkekekek2',
@@ -386,20 +379,7 @@
             .then(function (response) {
                 console.log(response.data);
             })
-    },
-    
-/*             update: function (id) {
-        axios.put('http://localhost:10081/api/books/update/' + id, {
-
-            title: '1224qweqweqwe421',
-            author: 'dnerk23ekekek2e',
-            category: 'google',
-            price: '123222'
-        })
-            .then(function (response) {
-                console.log(response.data);
-            })
-    }, */
+        },
     
     
         selectdel: function () {
@@ -468,7 +448,7 @@
         axios.get('http://localhost:10081/api/books')
             .then(function (response) {
 
-                console.log(response.data)
+               
                 vm.datas = response.data
                 console.log(vm.datas);
 
@@ -478,14 +458,10 @@
             adid: userid,
             adpass: userpassword,
 
-
                             })
 
                 .then(function (response) {
 
-                    
-
-                    console.log(response.data[0].admin)
                     vm.admin = response.data[0].admin
                      
 
