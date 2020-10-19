@@ -10,15 +10,12 @@
        
             <form v-on:submit.prevent="addUser" name="frm">
                 <input type="text" id="UserID" name="UserID" v-model="user.ID" placeholder="ID" @blur="checkID" >
-                <input type="text"   v-model="user.PASSWORD" placeholder="PASSWORD"  >
+                <input type="text"  v-model="user.PASSWORD" placeholder="PASSWORD"  >
                 <input type="text" v-model="user.GROUP" placeholder="GROUP">
                 <button class="btn" id="btn_OK" type="submit" disabled="">사용자 생성</button>
 
             </form>
 
-
-
-        
 
     </div>
     <script> 
@@ -43,14 +40,14 @@
             checkID(){
 
                 var arr = vm.datas
-                var flag = true;
+               // var flag = true;
                 var arrcou = arr.length
                 var btn_OK = document.getElementById('btn_OK');
               
 
                 console.log(arrcou)
                 if (this.user.ID == '') {
-
+                    document.getElementById('UserID').focus();
                     return alert('ID값을 입력해주세요.')
 
                 }
