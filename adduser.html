@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>사용자 추가</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id="app">
+       
+            <form v-on:submit.prevent="addUser" name="frm">
+                <input type="text" id="UserID" name="UserID" v-model="user.ID" placeholder="ID" @blur="checkID" >
+                <input type="text"   v-model="user.PASSWORD" placeholder="PASSWORD"  >
+                <input type="text" v-model="user.GROUP" placeholder="GROUP">
+                <button class="btn" id="btn_OK" type="submit" disabled="">사용자 생성</button>
+
+            </form>
+
+
+
+        
+
+    </div>
+    <script> 
+
+    
+    var vm = new Vue({
+        el: '#app',
+
+        data:{
+            user:{
+                ID: '',
+                PASSWORD: '',
+                GROUP: ''
+
+            },
+            datas:[{}]
+
+        },
+        
+        methods:{
+
+            checkID(){
+
+                var arr = vm.datas
+                var flag = true;
+                var arrcou = arr.length
+                var btn_OK = document.getElementById('btn_OK');
+              
+
+                console.log(arrcou)
+                if (this.user.ID == '') {
+
+                    return alert('ID값을 입력해주세요.')
+
+                }
+                else{
+                for (var i = 1; i < arrcou; i++) {
+                  if( arr[i].USERID == this.user.ID){
+                      
+                      alert('중복')
+                      btn_OK.disabled = true
+                      return false;
+                     
+
+                   
+                  }
+             
+                  
+                 else if(i+1 > arrcou){
+                    return false;
+                 }
+
+      
+
+                }
+                alert('사용 가능')
+                btn_OK.disabled = false
+                document.getElementById('UserID').disabled = true;
+                   
+/*                 arr.forEach(element => {
+                    if (element.USERID == this.user.ID && flag) {
+                        console.log(element.USERID)
+                        flag = false
+                        alert('중복')
+                        return false;
+
+                    }
+                    else{
+                      
+                      
+                    }
+                    
+                }); */
+
+                 
+             
+                
+            }
+
+            },            
+            
+            addUser(){
+            if (this.user.ID == ''){
+                    
+                return alert('ID값을 입력해주세요.')
+            }
+    
+            if (this.user.PASSWORD == '') {
+                return alert('패스워드를 입력해주세요.')
+            }
+
+            if (this.user.GROUP == '') {
+                    return alert('그룹명을 입력해주세요.')
+            }
+
+            else{
+
+
+                axios.post('/api/adduser',{
+                    ID : this.user.ID,
+                    PASSWORD : this.user.PASSWORD,
+                    GROUP : this.user.GROUP
+
+                }).then(function (response){
+                    alert(response.data + '저장 완료')                   
+                    window.location.href = 'http://localhost:10081/admin.html';
+                    
+                }).catch(e => {
+                    console.log(e.response)
+                })
+            }
+
+            }
+        }
+
+    })
+        axios.get('http://localhost:10081/api/users')
+
+                .then(function (response) {
+
+                   
+                    vm.datas = response.data
+                  console.log(response.data[0].USERID)
+                    
+                  
+                });
+
+    </script>
+
+</body>
+
+</html>

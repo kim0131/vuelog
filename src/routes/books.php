@@ -323,6 +323,36 @@ public function Userupdate(Request $request, Response $reponse, array $args)
             echo '{"msg": {"resp": ' . $e->getMessage() . '}}';
         }
     }
+    //10.19 사용자 추가
+    public function adduser(Request $request, Response $reponse, array $args)
+    {
+        $USERID = $request->getParam('ID');
+        $PASSWORD = $request->getParam('PASSWORD');
+        $GROUP = $request->getParam('GROUP');
+        $CREATED = date("Y-m-d H:i:s");
+        
+        
+        try {
+            //get db object
+            $db = new db();
+            //conncect
+            $pdo = $db->pdo;
+
+
+            $sql = "INSERT INTO VueLogin (USERID, `PASSWORD`, `GROUP`, created) VALUES (?,?,?,?)";
+
+
+            $pdo->prepare($sql)->execute([$USERID, $PASSWORD, $GROUP, $CREATED]);
+
+            $pdo = null;
+            
+            echo $USERID;
+        } catch (\PDOException $e) {
+            echo '{"error": {"text": ' . $e->getMessage() . '}}';
+        }
+
+
+    }
 
 
 }

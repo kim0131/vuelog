@@ -26,7 +26,7 @@
     </tr>
 
    
-    <div v-if="admin === 'Y'" style="float: right;" >
+    <div v-if="admin === 'Y'" style="float: right; margin-right:10pt;" >
         
         <button @click="admincheck()">관리자 페이지</button>
     </div>
@@ -202,13 +202,13 @@
 });
 
 
-        window.myChart.update();
+    window.myChart.update();
 
     },
+
     updateChartType: function () {
 
         var target = document.getElementById("chartType");
-
         var loge = target.options[target.selectedIndex].value
 
 
@@ -363,6 +363,7 @@
                     window.location.href = 'http://localhost:10081/read.html?id='+ id;
                 })
         },
+        
         add: function () {
          axios.post('http://localhost:10081/api/books/add', {
 
@@ -421,7 +422,7 @@
     },
 
        update: function (id) {
-            window.location.href = 'http://localhost:10081/update.html?id=' +id
+            window.location.href = 'http://localhost:10081/update.html?id=' + id
 
             },
        dele: function (id) {
@@ -442,8 +443,8 @@
     }).$mount('#app');
         
         axios.get('http://localhost:10081/api/books')
-            .then(function (response) {
 
+            .then(function (response) {
                
                 vm.datas = response.data
                 console.log(vm.datas);
@@ -452,6 +453,7 @@
           axios.post('api/admincheck', {
 
             adid: userid,
+
             adpass: userpassword,
 
                             })

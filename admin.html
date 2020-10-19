@@ -32,6 +32,7 @@
         <td><button @click="userdel(ab.ID)">delete</button></td>
     </tr>
     </table>
+    <button @click="update('x')">사용자 추가</button>
     </div>
     <script type="text/javascript">
          var vm =  new Vue({
@@ -42,9 +43,17 @@
 
             },
             methods:{
-                update: function (id) {
-                    window.location.href = 'http://localhost:10081/register.html?id=' + id
 
+
+
+                update: function (id) {
+                    if(id === 'x'){
+                         window.location.href = 'http://localhost:10081/adduser.html'
+
+                    }else{
+
+                    window.location.href = 'http://localhost:10081/register.html?id=' + id
+                    }
                 },
 
                 userdel: function (id) {

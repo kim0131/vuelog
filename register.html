@@ -19,6 +19,7 @@
                 <td>ID</td>
                 <td>PASSWORD</td>
                 <td>부서</td>
+                <td>활동계정 여부</td>
                 <td>수정</td>
                 <td>삭제</td>
 
@@ -27,6 +28,7 @@
             <td><input type="text" v-model="datas[0].USERID"></td>
             <td><input type="text" v-model:value="users.PASSWORD"></td>
             <td><input type="text" v-model:value="users.GROUP"></td>
+            <td><input type="text" v-model:value="users.active"></td>
                 <td><button @click="update(users.ID)">수정</button></td>
                 <td><button @click="userdel(users.ID)">삭제</button></td>
                 
@@ -102,7 +104,7 @@
                  }
                  
                 }).$mount('#app')
-            
+    
       axios.get('http://localhost:10081/api/user/'+ id )
 
             .then(function (response) {
@@ -112,7 +114,7 @@
                 console.log(vm.datas);
 
             }); 
-
+          
             
         </script>
 

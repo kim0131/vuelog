@@ -41,7 +41,8 @@ $app->delete('/api/userdel/{id}', \funbook::class . ':userdel');
 $app->post('/api/Userupdate/{id}', \funbook::class . ':Userupdate');
 
 $app->post('/api/admincheck', \funbook::class . ':admincheck');
-
+//10.19 user add
+$app->post('/api/adduser', \funbook::class . ':adduser');
 
 $app->run();
 
