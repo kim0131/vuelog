@@ -1,15 +1,14 @@
 <!doctype html>
-
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
+
 <title>정보 생성</title>
 
 <body>
     <h1>정보 생성</h1>
 
     <div id="app">
-
         <form v-on:submit.prevent="Create">
             <input type="text" v-model="users.title" placeholder="제목">
             <input type="text" v-model="users.author" placeholder="작가">
@@ -17,39 +16,27 @@
             <input type="text" v-model="users.price" placeholder="가격">
             <button class="btn" type="submit">정보 생성</button>
 
-
         </form>
-
     </div>
-
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
     <script src="https://unpkg.com/vuex@2.0.0"></script>
     <script>
-
         var vm = new Vue({
             el: '#app',
-
             data: {
-    
                 users: {
                     title: '',
                     author: '',
                     category: '',
                     price: ''
                 }
+            },
 
-
-        },
-
-
-        methods: {
-
-
+            methods: {
                 Create() {
-
                     if (this.users.title == '') {
                         return alert('제목을 입력해주세요.');
                     }
@@ -61,30 +48,22 @@
                     }
                     if (this.users.price == '') {
                         return alert('가격을 입력해주세요.');
-                    }
-                    else {
-                      
-
+                    } else {
                         axios.post('/api/books/add', {
-
                             title: this.users.title,
                             author: this.users.author,
-                            category : this.users.category,
-                            price : this.users.price
-                            
+                            category: this.users.category,
+                            price: this.users.price
 
                         }).then(function (response) {
-
-                              console.log(response.data);
-                               alert('저장완료');
-                             window.location.href = 'http://localhost:10081/test.html';
+                            console.log(response.data);
+                            alert('저장완료');
+                            window.location.href = 'http://localhost:10081/test.html';
                         }
-
                         ).catch(e => {
                             console.log(e.response)
                             alert('g');
                         }
-                            
                             /*                     var ID = this.ID.value;
                                                 var password = this.password.value;
                                                 axios.post('/login', {
@@ -92,17 +71,12 @@
                                                     password: password
                                                 }); */
 
-
                         )
-                        
                     }
-                    
 
                 }
             }
         })
 
-
     </script>
-
 </body>

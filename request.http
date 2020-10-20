@@ -1,0 +1,20 @@
+# Back단 REST API 요청 양식
+# @uri = http://101.101.209.69
+@uri = http://localhost:10081
+
+
+### 로그인 - form. 사용하지 않음
+POST {{uri}}/api/login HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+userid=swshin
+&password=1234
+
+### 로그인 - json
+POST {{uri}}/api/login HTTP/1.1
+content-type: application/json
+
+{
+    "userid": "swshin",
+    "password": "1234"
+}
